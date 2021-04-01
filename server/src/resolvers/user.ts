@@ -42,12 +42,36 @@ export class UserResolver {
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { em }: AppContext,
   ): Promise<UserResponse> {
+    if (options.password.length <= 3) {
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "password must have a length greater than 3",
+          },
+        ],
+      };
+    }
     const passowrdHash = await argon2.hash(options.password);
     const user = em.create(User, {
       username: options.username,
       password: passowrdHash,
     });
-    await em.persistAndFlush(user);
+    try {
+      await em.persistAndFlush(user);
+    } catch (err) {
+      if (err.code === "23505") {
+        // || err.detail.includes("already exists")) {
+        return {
+          errors: [
+            {
+              field: "username",
+              message: "username has already been taken",
+            },
+          ],
+        };
+      }
+    }
     return { user };
   }
 
