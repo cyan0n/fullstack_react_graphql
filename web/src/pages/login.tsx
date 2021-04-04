@@ -4,24 +4,24 @@ import { Button } from "@chakra-ui/react";
 import { Container } from "../components/Container";
 import { InputField } from "../components/InputField";
 import { useMutation } from "urql";
-import { useRegisterMutation } from "../generated/graphql";
+import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
 
-interface RegisterProps {}
+interface LoginProps {}
 
-const Register: React.FC<RegisterProps> = ({}) => {
+const Login: React.FC<LoginProps> = ({}) => {
   const router = useRouter();
-  const [, register] = useRegisterMutation();
+  const [, login] = useLoginMutation();
   return (
     <Container variant="small">
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register(values);
-          if (response.data?.register.errors) {
-            setErrors(toErrorMap(response.data.register.errors));
-          } else if (response.data?.register.user) {
+          const response = await login({ options: values });
+          if (response.data?.login.errors) {
+            setErrors(toErrorMap(response.data.login.errors));
+          } else if (response.data?.login.user) {
             router.push("/");
           }
         }}
@@ -40,7 +40,7 @@ const Register: React.FC<RegisterProps> = ({}) => {
               placeholder="******"
             />
             <Button type="submit" isLoading={isSubmitting} colorScheme="teal">
-              Register
+              Login
             </Button>
           </Form>
         )}
@@ -49,4 +49,4 @@ const Register: React.FC<RegisterProps> = ({}) => {
   );
 };
 
-export default Register;
+export default Login;

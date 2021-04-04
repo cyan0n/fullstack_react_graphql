@@ -105,7 +105,7 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username",
+            field: "password",
             message: "username/password incorrect",
           },
         ],
