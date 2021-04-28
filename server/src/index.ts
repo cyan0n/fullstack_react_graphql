@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
-import { __prod__ } from "./config";
+import { COOKIE_NAME, __prod__ } from "./config";
 import mikroConfig from "./mikro-orm.config";
 import express, { Application } from "express";
 import { ApolloServer } from "apollo-server-express";
@@ -52,7 +52,7 @@ function initSession(app: Application) {
 
   app.use(
     session({
-      name: "qid",
+      name: COOKIE_NAME,
       saveUninitialized: false,
       store: new RedisStore({
         client: redisClient,
