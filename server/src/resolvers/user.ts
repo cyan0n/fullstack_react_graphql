@@ -12,6 +12,7 @@ import {
 import argon2 from "argon2";
 import { User } from "../entities/User";
 import { EntityManager } from "@mikro-orm/postgresql";
+import { COOKIE_NAME } from "../config";
 
 @InputType()
 class UsernamePasswordInput {
@@ -137,7 +138,7 @@ export class UserResolver {
           resolve(false);
           return;
         }
-        res.clearCookie("qid");
+        res.clearCookie(COOKIE_NAME);
         resolve(true);
       })
     );
