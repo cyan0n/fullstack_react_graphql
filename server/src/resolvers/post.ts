@@ -7,9 +7,7 @@ const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
-  async posts(@Ctx() { em }: AppContext): Promise<Post[]> {
-    // Artificial delay
-    await sleep(3000);
+  posts(@Ctx() { em }: AppContext): Promise<Post[]> {
     return em.find(Post, {});
   }
 
