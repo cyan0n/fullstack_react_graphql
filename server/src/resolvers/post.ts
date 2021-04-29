@@ -2,10 +2,14 @@ import { AppContext } from "../types";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Post } from "../entities/Post";
 
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
-  posts(@Ctx() { em }: AppContext): Promise<Post[]> {
+  async posts(@Ctx() { em }: AppContext): Promise<Post[]> {
+    // Artificial delay
+    await sleep(3000);
     return em.find(Post, {});
   }
 
@@ -17,7 +21,7 @@ export class PostResolver {
   @Mutation(() => Post)
   async createPost(
     @Arg("title") title: string,
-    @Ctx() { em }: AppContext,
+    @Ctx() { em }: AppContext
   ): Promise<Post> {
     const post = em.create(Post, { title });
     await em.persistAndFlush(post);
@@ -28,7 +32,7 @@ export class PostResolver {
   async updatePost(
     @Arg("id") id: number,
     @Arg("title", () => String, { nullable: true }) title: string,
-    @Ctx() { em }: AppContext,
+    @Ctx() { em }: AppContext
   ): Promise<Post | null> {
     const post = await em.findOne(Post, { id });
     if (!post) return null;
@@ -42,7 +46,7 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async deletePost(
     @Arg("id") id: number,
-    @Ctx() { em }: AppContext,
+    @Ctx() { em }: AppContext
   ): Promise<boolean> {
     try {
       await em.nativeDelete(Post, { id });
